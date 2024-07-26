@@ -45,14 +45,14 @@ exports.category_create_post = [
     asyncHandler(async (req, res, next) => {
         const errors = validationResult(req);
 
-        const category = await Category.findOne({name: req.body.name}).exec();
-
-        if (category !== null) {
-            res.redirect(category.url)
+        const category = await db.getCategoryByName(req.body.name)
+        console.log(category)
+        if (category.length > 0) {
+            res.redirect('/inventory/categories')
             return;
         }
 
-        const newCategory = new Category({name:req.body.name});
+        const newCategory = {name:req.body.name};
 
         if (!errors.isEmpty()) {
             res.render('category_form', {
@@ -63,8 +63,8 @@ exports.category_create_post = [
         }
 
         else {
-            await newCategory.save();
-            res.redirect(newCategory.url)
+            await db.createCategory(req.body.name)
+            res.redirect('/inventory/categories')
         }
     })
 ]

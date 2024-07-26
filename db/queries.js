@@ -32,11 +32,40 @@ async function getCategory(categoryID) {
     return rows;
 }
 
+async function getBrandByName(brandname) {
+
+}
+
+async function getCategoryByName(categoryName) {
+    const { rows } = await pool.query("SELECT * FROM categories WHERE name = ($1)", [categoryName])
+    return rows;
+}
+
+async function createItem(category, brand, model, colour, description, price, image, image_alt) {
+
+}
+
+async function createBrand(brandName, website) {
+    await pool.query("INSERT into brands (name, website) VALUES ($1, $2)", [brandName, website]);
+    console.log('brand added')
+}
+
+async function createCategory(categoryName) {
+    await pool.query("INSERT into categories (name) VALUES ($1)", [categoryName]);
+    console.log('category added')
+}
+
 module.exports = {
     getAllItems,
     getAllBrands,
     getAllCategories,
     getItem,
     getBrand,
-    getCategory
+    getBrandByName,
+    getCategory,
+    getCategoryByName,
+    createItem,
+    createBrand,
+    createCategory,
+    
 }
