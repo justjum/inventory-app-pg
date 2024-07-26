@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('./partials/head') %>
+<body>
+    <%- include('./partials/header') %>
+    <div class="container-fluid">
+        <div class="row">
+            <%- include('./partials/navbar')  %>
+            <div class="col-sm-10">
+                <h1 style="text-align: center;"><%= title %></h1>
+                <% if (categories.length > 0) { %>
+                    <div class="container" style="max-width: 500px;">
+                        <table class="table">
+                            <tr>
+                                <th><strong>Category</strong></th>
+                            </tr>
+                        
+                        <% for (x=0; x < categories.length; x++) { %>
+                        <tr>
+                            <td>
+                                <a href="/inventory/category/<%=categories[x].id%>"><p><%= categories[x].name%></p></a>
+                            </td>
+                        </tr>
+                        <% } %>
+                        </table>
+                    </div>
+
+                <% }  else { %>
+                    <p><strong>There are no categories.</strong></p>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

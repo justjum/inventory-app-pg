@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('./partials/head') %>
+<body>
+    <%- include('./partials/header') %>
+    <div class="container-fluid">
+        <div class="row">
+            <%- include('./partials/navbar')  %>
+            <div class="col-sm-10">
+                <h1 style="text-align: center;"><%= title %></h1>
+                <% if (brands.length > 0) { %>
+                    <div class="container" style="max-width: 500px;">
+                        <table class="table">
+                            <tr>
+                                <th><strong>Brand</strong></th>
+                                <th><strong>Website</strong></th>
+                            </tr>
+                        
+                        <% for (x=0; x < brands.length; x++) { %>
+                        <tr>
+                            <td>
+                                <a href="/inventory/brand/<%=brands[x].id%>"><p><%= brands[x].name%></p></a>
+                            </td>
+                            <td>
+                                <a href="<%=brands[x].website%>">
+                                    <p><%=brands[x].website%></p>
+                                </a>     
+                            </td>
+                        </tr>
+                        <% } %>
+                        </table>
+                    </div>
+
+                <% }  else { %>
+                    <p><strong>There are no brands.</strong></p>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

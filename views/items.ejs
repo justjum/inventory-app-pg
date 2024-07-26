@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('./partials/head') %>
+<body>
+    <%- include('./partials/header') %>
+    <div class="container-fluid">
+        <div class="row">
+            <%- include('./partials/navbar')  %>
+            <div class="col-sm-10">
+                <h1 style="text-align: center;"><%= title %></h1>
+                <% if (items.length > 0) { %>
+                    <div class="container" style="max-width: 500px;">
+                        <table class="table">
+                            <tr>
+                                <th><strong>Item</strong></th>
+                                <th><strong>Quantity</strong></th>
+                            </tr>
+                        
+                        <% for (x=0; x < items.length; x++) { %>
+                        <tr>
+                            <td>
+                                <a href="/inventory/item/<%=items[x].id%>"><p><%= items[x].brand%> <%= items[x].model%></p></a>
+                            </td>
+                            <td>
+                                <p><%=items[x].quantity%></p>
+                            </td>
+                        </tr>
+                        <% } %>
+                        </table>
+                    </div>
+
+                <% }  else { %>
+                    <p><strong>There are no items.</strong></p>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

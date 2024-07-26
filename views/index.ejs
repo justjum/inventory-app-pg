@@ -2,23 +2,17 @@
 <html>
   <%- include('./partials/head') %>
   <body>
-    <h1><%= title %></h1>
-    <p>Welcome to <%= title %></p>
+    <%- include('./partials/header') %>
     <div class="container-fluid">
       <div class="row">
         <%- include('./partials/navbar')  %>
         <div class="col-sm-10">
-          <% if (items.length > 0) { %>
-            <h3>All items:</h3>
-            <% for (x=0; x < items.length; x++) { %>
-              <p></p>
-              <p><%= items[x].brand%> <%= items[x].model%> (<%= items[x].category%>)</p>
-              <p></p>
-              <hr>
-            <% } %>
-          <% }  else { %>
-            <p><strong>There are no items.</strong></p>
-          <% } %>
+          <h1><%= title %></h1>
+          <p>Welcome to <%= title %></p>
+          <hr>
+          <p><strong>Number of Items:</strong> <%= items.length %> </p>
+          <p><strong>Number of Brands:</strong> <%= brands.length %> </p>
+          <p><strong>Number of Categories:</strong> <%= categories.length %></p>
         </div>
       </div>
     </div>

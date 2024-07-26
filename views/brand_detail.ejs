@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('./partials/head') %>
+<body>
+    <%- include('./partials/header') %>
+    <div class="container-fluid">
+        <div class="row">
+            <%- include('./partials/navbar')  %>
+            <div class="col-sm-10">
+                <h1 style="text-align: center;"><%= title %></h1>
+                <h3><%= brand.name %></h3>
+                <div class="container">
+                    <ul>
+                        <li>
+                            <strong>Brand: </strong>
+                            <%= brand[0].name %>
+                        </li>
+                        <li>
+                            <strong>Website: </strong>
+                            <a href="<%= brand[0].website %>"><%= brand[0].website %></a>
+                            
+                        </li>
+                    </ul>
+                    <hr>
+                    <button class="btn btn-primary">Update</button><button class="btn btn-primary">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

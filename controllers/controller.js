@@ -10,7 +10,7 @@ exports.indexGet = asyncHandler(async (req, res, next) => {
     console.log(items);
 
     res.render('index', {
-        title: 'Everything',
+        title: 'Inventory Application',
         items: items,
         brands: brands,
         categories: categories,
