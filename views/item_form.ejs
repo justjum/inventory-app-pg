@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+    <%- include('./partials/head') %>
+<body>
+    <%- include('./partials/header') %>
+    <div class="container-fluid">
+        <div class="row">
+            <%- include('./partials/navbar')  %>
+            <div class="col-sm-10">
+                <h1 style="text-align: center;"><%= title %></h1>
+                <form action="/inventory/item/create" method="POST">
+                    <div class="form-group">
+                        <label for="category">Category: </label>
+                        <select class="form-control" type="text" name="category" value="" required>
+                            <option value="">--Please Select a Category--</option>
+                            <% for (let x=0; x<categories.length; x++) { %>
+                                <% if (locals.newItem && categories[x].name == newItem.category) { %>
+                                    <option value="<%= categories[x].name %>" selected><%= categories[x].name %></option>
+                                <% } else { %>
+                                    <option value="<%= categories[x].name %>"><%= categories[x].name %></option>
+                                <% } %>
+                            <% } %>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="brand">Brand: </label>
+                        <select class="form-control" type="text" name="brand" value="" required>
+                            <option value="">--Please Select a Brand--</option>
+                            <% for (let x=0; x<brands.length; x++) { %>
+                                <% if (locals.newItem && brands[x].name == newItem.brand) { %>
+                                    <option value="<%= brands[x].name %>" selected><%= brands[x].name %></option>
+                                <% } else { %>
+                                    <option value="<%= brands[x].name %>"><%= brands[x].name %></option>
+                                <% } %>
+                            <% } %>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="name">Model: </label>
+                        <input class="form-control" type="text" name="model" value="<%= locals.newItem ? newItem.model : ""%>">
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea name="description" id="description" rows="4" class="form-control"><%= locals.newItem ? newItem.description : ""%></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="Price">Price: </label>
+                        <input class="form-control" type="number" step="0.01" name="price" value="<%= locals.newItem ? newItem.price : ""%>">
+                    </div>
+                    <div class="form-group">
+                        <label for="quantity">Quantity: </label>
+                        <input class="form-control" type="number" name="quantity" value="<%= locals.newItem ? newItem.quantity : ""%>">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="image">Image URL: </label>
+                        <input class="form-control" type="text" name="image" value="<%= locals.newItem ? newItem.image : ""%>">
+                    </div>
+                    <div class="form-group">
+                        <label for="image_alt">Image Alternate Text: </label>
+                        <input class="form-control" type="text" name="image_alt" value="<%= locals.newItem ? newItem.image_alt : ""%>">
+                    </div>
+                    <hr>
+                    <div class="form-group">
+                        <label for="password">Admin Password: </label>
+                        <input type="password" id="password" name="password" class="form-control">
+                    </div>
+                    <button class="btn btn-primary" type="Submit">Save Item</button>
+                </form>
+                <hr>
+                <% if (locals.errors) { %>
+                    <% for (let x=0; x<errors.length; x++) { %>
+                        <p><%= errors[x].msg %></p>
+                    <% } %>
+                <% } %>
+                <% if (locals.newBrand) { %>
+                    <p>this</p>
+                    <p><%= newBrand.brand %></p>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

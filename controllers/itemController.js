@@ -63,27 +63,27 @@ exports.item_detail = asyncHandler(async (req, res, next) => {
 });
 
 exports.item_create_get = asyncHandler(async (req, res, next) => {
-    const [ allBrands, allCategories ] = await Promise.all([
-        Brand.find({}).sort({name:1}).exec(),
-        Category.find({}).sort({name:1}).exec()
-    ])
-
+    const [ brands, categories] = await Promise.all([
+        db.getAllBrands(),
+        db.getAllCategories() 
+    ]) 
+    console.log(categories)
     res.render('item_form', {
         title: "Create Item",
-        categories: allCategories,
-        brands: allBrands,
+        categories: categories,
+        brands: brands,
     });
 })
 
 exports.item_create_post = [
     // Validate and sanitize forms
-    body("category", "Category must be specified").trim().escape(),
-    body("brand", "Brand must be satisfied").trim().escape(),
-    body("model", "Model must be specified")
+    body("category", "Category must be specified.").trim().escape(),
+    body("brand", "Brand must be specified.").trim().escape(),
+    body("model", "Model must be specified.")
         .trim()
         .isLength({ min: 1})
         .escape(),
-    body("description", "Description must be specified")
+    body("description", "Description must be specified.")
         .trim()
         .isLength( {min: 1, max:100})
         .escape(),
@@ -96,43 +96,44 @@ exports.item_create_post = [
         .isNumeric({min: 1, max: 100}),
     body("password", "Incorrect password")
         .trim()
+        .isLength({min:1})
         .isIn('!iAnV42ds54'),
     
     asyncHandler(async (req, res, next) => {
         const errors = validationResult(req);
 
         
-        const item = new Item({
+        const newItem = {
             category: req.body.category,
             brand: req.body.brand,
             model: req.body.model,
             description: req.body.description,
             price: req.body.price,
             quantity: req.body.quantity,
-        });
+            image: req.body.image,
+            image_alt: req.body.image_alt   
+        };
 
         if(!errors.isEmpty()) {
             // There are errors, render form with sanitized values and messages.
-            const [ allBrands, allCategories ] = await Promise.all([
-                Brand.find({}).exec(),
-                Category.find({}).exec()
-            ])
+            const [ brands, categories] = await Promise.all([
+                db.getAllBrands(),
+                db.getAllCategories() 
+            ]) 
 
             res.render("item_form", {
                 title: "Create Item",
-                brands: allBrands,
-                categories: allCategories,
+                brands: brands,
+                categories: categories,
                 errors: errors.array(),
-                item: item,
-                selected_category: item.category,
-                selected_brand: item.brand
+                newItem: newItem,
             })
         }
 
         else {
             // Place holders for image functions
-            await item.save();
-            res.redirect(item.url);
+            await db.createItem(req.body.category, req.body.brand, req.body.model, req.body.description, req.body.price, req.body.quantity, req.body.image, req.body.image_alt)
+            res.redirect('/inventory/items');
         }  
     })    
 ]

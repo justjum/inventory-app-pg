@@ -40,6 +40,7 @@ exports.category_create_post = [
         .escape(),
     body("password", "Incorrect password")
         .trim()
+        .isLength({min:1})
         .isIn('!iAnV42ds54'),
 
     asyncHandler(async (req, res, next) => {
@@ -53,7 +54,7 @@ exports.category_create_post = [
         }
 
         const newCategory = {name:req.body.name};
-
+        console.log(newCategory)
         if (!errors.isEmpty()) {
             res.render('category_form', {
                 title: 'Create Category',

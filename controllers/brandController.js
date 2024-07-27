@@ -26,7 +26,6 @@ exports.brand_detail = asyncHandler(async (req, res, next) => {
 });
 
 exports.brand_create_get = asyncHandler(async (req, res, next) => {
-    console.log('create get')
     res.render('brand_form', {
         title: "Create Brand",
     })
@@ -35,25 +34,27 @@ exports.brand_create_get = asyncHandler(async (req, res, next) => {
 exports.brand_create_post = [
     
     body("name", "Must have brand name.").isLength(min=1).escape(),
+    body('website', "Must be a URL.").isURL(),
     body("password", "Incorrect password")
         .trim()
+        .isLength({min:1})
         .isIn('!iAnV42ds54'),
 
     asyncHandler(async (req, res, next) => {
         const errors = validationResult(req);
         console.log('create post');
-        const brand = await Brand.findOne({name:req.body.name}).exec();
+        const brand = await db.getBrandByName(req.body.name);
         
-        if (brand !== null) {
+        if (brand.length > 0) {
             console.log('redirect')
-            res.redirect(brand.url)
+            res.redirect('/inventory/brands')
             return;
         }
 
-        const newBrand = new Brand({
+        const newBrand = {
             name: req.body.name,
             website: req.body.website
-        })
+        }
 
         if (!errors.isEmpty()) {
             res.render('brand_form', {
@@ -65,8 +66,8 @@ exports.brand_create_post = [
         }
 
         else {
-            await newBrand.save();
-            res.redirect(newBrand.url)
+            await db.createBrand(req.body.name, req.body.website)
+            res.redirect("/inventory/brands")
         }
     })
 ]
