@@ -57,6 +57,21 @@ async function createCategory(categoryName) {
     console.log('category added');
 }
 
+async function updateItem(id, category, brand, model, description, price, quantity, image, image_alt) {
+    await pool.query("UPDATE items SET category_id=(SELECT id FROM categories WHERE name = $1), brand_id=(SELECT id FROM brands WHERE name = $2), model=($3), description=($4), price=($5), quantity=($6), image=($7), image_alt=($8) WHERE id = ($9)", [category, brand, model, description, price, quantity, image, image_alt, id]);
+    console.log(`${model} updated`)
+}
+
+async function updateBrand(id, name, website) {
+    await pool.query("UPDATE brands SET name=($1), website=($2) WHERE id = ($3)", [name, website, id]);
+    console.log(`${name} updated`);
+} 
+
+async function updateCategory(id, name) {
+    await pool.query("UPDATE categories SET name=($1) WHERE id = ($2)", [name, id]);
+    console.log(`${name} Category Updated`)
+}
+
 module.exports = {
     getAllItems,
     getAllBrands,
@@ -69,4 +84,7 @@ module.exports = {
     createItem,
     createBrand,
     createCategory,
+    updateItem,
+    updateBrand, 
+    updateCategory
 }

@@ -141,16 +141,16 @@ exports.item_create_post = [
 
 exports.item_update_get = asyncHandler(async (req, res, next) => {
     const [ allBrands, allCategories, item ] = await Promise.all([
-        Brand.find({}).sort({name:1}).exec(),
-        Category.find({}).sort({name:1}).exec(),
-        Item.findById(req.params.id).exec()
+        db.getAllBrands(),
+        db.getAllCategories(),
+        db.getItem(req.params.id)
     ])
-
+    console.log(item)
     res.render('item_form', {
         title: "Update Item",
         categories: allCategories,
         brands: allBrands,
-        item: item,
+        newItem: item[0],
         selected_category: item.category,
         selected_brand: item.brand
     });
@@ -182,21 +182,22 @@ exports.item_update_post = [
     asyncHandler(async (req, res, next) => {
         const errors = validationResult(req);
 
-        const item = new Item({
-            _id: req.params.id,
+        const item = {
             category: req.body.category,
             brand: req.body.brand,
             model: req.body.model,
             description: req.body.description,
             price: req.body.price,
             quantity: req.body.quantity,
-        });
+            image: req.body.image,
+            image_alt: req.body.image_alt
+        };
 
         if(!errors.isEmpty()) {
             // There are errors, render form with sanitized values and messages.
             const [ allBrands, allCategories ] = await Promise.all([
-                Brand.find({}).exec(),
-                Category.find({}).exec()
+                db.getAllBrands(),
+                db.getAllCategories()
             ])
 
             res.render("item_form", {
@@ -204,16 +205,14 @@ exports.item_update_post = [
                 brands: allBrands,
                 categories: allCategories,
                 errors: errors.array(),
-                item: item,
+                newItem: item,
                 selected_brand: item.brand,
                 selected_category: item.category
             })
-        }
-
-        else {
+        } else {
             // Place holders for image functions
-            await Item.findByIdAndUpdate(req.params.id, item)
-            res.redirect(item.url);
+            await db.updateItem(req.params.id, req.body.category, req.body.brand, req.body.model, req.body.description, req.body.price, req.body.quantity, req.body.image, req.body.image_alt, )
+            res.redirect('/inventory/items');
         }  
     })    
 ]

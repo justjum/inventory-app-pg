@@ -6,7 +6,15 @@ const { allItems } = require('./itemController');
 
 exports.allCategories = asyncHandler(async (req, res, next) => {
     const allCategories = await db.getAllCategories();
-
+    allCategories.sort((a, b) => {
+        if (a.name < b.name) {
+            return -1;
+        }
+        if (b.name > a.name) {
+            return 1;
+        }
+        return 0;
+    });
     res.render('categories', {
         title: 'All Categories',
         categories: allCategories
@@ -15,7 +23,7 @@ exports.allCategories = asyncHandler(async (req, res, next) => {
 
 exports.category_detail = asyncHandler(async (req, res, next) => {
     const category = await db.getCategory(req.params.id)
-
+    console.log(category);
     if (category === null) {
         const err = new Error('Category does not exist');
         err.status = 404;
@@ -111,10 +119,11 @@ exports.category_delete_post = [
 
 
 exports.category_update_get = asyncHandler(async (req, res, next) => {
-    const category = await Category.findById(req.params.id)
+    const category = await db.getCategory(req.params.id);
+    console.log(category)
     res.render('category_form', {
         title: "Update Category",
-        newCategory: category
+        newCategory: category[0]
     })
 });
 
@@ -127,10 +136,10 @@ exports.category_update_post = [
     asyncHandler(async (req, res, next) => {
         const errors = validationResult(req);
 
-        const category = new Category({
+        const category = {
             _id: req.params.id,
             name: req.body.name
-        })
+        }
 
         if (!errors.isEmpty()) {
             res.render('category_form', {
@@ -138,11 +147,11 @@ exports.category_update_post = [
                 newCategory: category,
                 errors: errors.array()
             })
-            return
+            return;
         }
 
         else {
-            await Category.findByIdAndUpdate(req.params.id, category, {});
+            await db.updateCategory(req.params.id, req.body.name)
             res.redirect('/inventory/categories')
         }
     })

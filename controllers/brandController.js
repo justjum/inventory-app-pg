@@ -114,10 +114,10 @@ exports.brand_delete_post = [
 
 exports.brand_update_get = asyncHandler(async (req, res, next) => {
     console.log('update get')
-    const brand = await Brand.findById(req.params.id)
+    const brand = await db.getBrand(req.params.id)
     res.render('brand_form', {
         title: "Update Brand",
-        newBrand: brand
+        newBrand: brand[0]
     })
 });
 
@@ -131,11 +131,10 @@ exports.brand_update_post = [
         console.log('update post')
         const errors = validationResult(req);
 
-        const brand = new Brand({
-            _id: req.params.id,
+        const brand = {
             name: req.body.name,
             website: req.body.website
-        })
+        }
 
         if (!errors.isEmpty()) {
             res.render('brand_form', {
@@ -143,12 +142,12 @@ exports.brand_update_post = [
                 newBrand: brand,
                 errors: errors.array()
             })
-            return
+            return;
         }
 
         else {
-            const updatedBrand = await Brand.findByIdAndUpdate(req.params.id, brand, {});
-            res.redirect('/inventory/brands')
+            const updatedBrand = await db.updateBrand(req.params.id, req.body.name, req.body.website);
+            res.redirect('/inventory/brands');
         }
     })
 ]
