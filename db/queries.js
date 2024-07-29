@@ -72,6 +72,31 @@ async function updateCategory(id, name) {
     console.log(`${name} Category Updated`)
 }
 
+async function deleteItem(id) {
+    await pool.query("DELETE FROM items WHERE id = $1", [id]);
+    console.log('Item Deleted')
+}
+
+async function deleteBrand(id) {
+    await pool.query("DELETE FROM brands WHERE id = $1", [id]);
+    console.log('Brand Deleted')
+}
+
+async function deleteCategory(id) {
+    await pool.query("DELETE FROM categories WHERE id = $1", [id]);
+    console.log('Category Deleted')
+}
+
+async function getRelatedByBrand(id) {
+    const { rows } = await pool.query("SELECT * FROM items WHERE brand_id=($1)", [id])
+    return rows;
+}
+
+async function getRelatedByCategory(id) {
+    const { rows } = await pool.query("SELECT I.*, B.name AS brand FROM items I INNER JOIN brands B ON B.id = I.brand_id WHERE category_id=($1)", [id]);
+    return rows;
+}
+
 module.exports = {
     getAllItems,
     getAllBrands,
@@ -86,5 +111,10 @@ module.exports = {
     createCategory,
     updateItem,
     updateBrand, 
-    updateCategory
+    updateCategory,
+    deleteItem,
+    deleteBrand,
+    deleteCategory,
+    getRelatedByBrand,
+    getRelatedByCategory
 }

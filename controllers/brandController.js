@@ -73,17 +73,15 @@ exports.brand_create_post = [
 ]
 
 exports.brand_delete_get = asyncHandler(async (req, res, next) => {
-    const [currentBrand, allItems] = await Promise.all([
-        Brand.findById(req.params.id).exec(),
-        Item.find({ brand: req.params.id })
-            .populate('brand')
-            .exec()
+    const [currentBrand, relatedItems] = await Promise.all([
+        db.getBrand(req.params.id),
+        db.getRelatedByBrand(req.params.id)
     ])
-
+    console.log(relatedItems)
     res.render('brand_delete', {
         title: 'Delete Brand',
-        brand: currentBrand,
-        items: allItems
+        brand: currentBrand[0],
+        items: relatedItems
     })
 })
 
@@ -95,18 +93,18 @@ exports.brand_delete_post = [
     asyncHandler(async (req, res, next) => {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            const currentBrand = await Brand.findById(req.params.id).exec();
+            const currentBrand = await db.getBrand(req.params.id)
 
             res.render('brand_delete', {
                 title: 'Delete Brand',
-                brand: currentBrand,
+                brand: currentBrand[0],
                 items: [],
                 errors: errors.array()
             })
-            return
+            return;
         }
 
-        await Brand.findByIdAndDelete(req.body.brandid);
+        await db.deleteBrand(req.body.id)
         res.redirect('/inventory/brands');
     })
 ]

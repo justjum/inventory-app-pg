@@ -80,15 +80,13 @@ exports.category_create_post = [
 
 exports.category_delete_get = asyncHandler(async (req, res, next) => {
     const [currentCategory, allItems] = await Promise.all([
-        Category.findById(req.params.id).exec(),
-        Item.find({ category: req.params.id })
-            .populate('brand')
-            .exec()
+        db.getCategory(req.params.id),
+        db.getRelatedByCategory(req.params.id)
     ])
 
     res.render('category_delete', {
-        title: 'Category Delete',
-        category: currentCategory,
+        title: `Delete Category: ${currentCategory[0].name}`,
+        category: currentCategory[0],
         items: allItems
     })
 })
@@ -101,18 +99,18 @@ exports.category_delete_post = [
     asyncHandler(async (req, res, next)=> {
         const errors = validationResult(req);
         if (!errors.isEmpty()) {
-            const currentCategory = await Category.findById(req.params.id).exec();
+            const currentCategory = await db.getCategory(req.params.id)
 
             res.render('category_delete', {
-                title: 'Delete Category',
-                category: currentCategory,
+                title: `Delete Category: ${currentCategory[0].name}`,
+                category: currentCategory[0],
                 items: [],
                 errors: errors.array()
             })
-            return
+            return;
         }
 
-        await Category.findByIdAndDelete(req.body.categoryid);
+        await db.deleteCategory(req.body.id)
         res.redirect('/inventory/categories')
     })
 ]

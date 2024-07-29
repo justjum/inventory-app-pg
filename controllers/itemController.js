@@ -211,7 +211,7 @@ exports.item_update_post = [
             })
         } else {
             // Place holders for image functions
-            await db.updateItem(req.params.id, req.body.category, req.body.brand, req.body.model, req.body.description, req.body.price, req.body.quantity, req.body.image, req.body.image_alt, )
+            await db.updateItem(req.params.id, req.body.category, req.body.brand, req.body.model, req.body.description, req.body.price, req.body.quantity, req.body.image, req.body.image_alt)
             res.redirect('/inventory/items');
         }  
     })    
@@ -219,10 +219,10 @@ exports.item_update_post = [
 
 
 exports.item_delete_get = asyncHandler(async(req, res, next) => {
-    current_item = await Item.findById(req.params.id);
+    current_item = await db.getItem(req.params.id)
     res.render('item_delete', {
         title: 'Delete Item:',
-        item: current_item
+        item: current_item[0]
     });
 }) 
 
@@ -237,14 +237,14 @@ exports.item_delete_post = [
         const errors = validationResult(req)
 
         if (!errors.isEmpty()) {
-            current_item = await Item.findById(req.params.id);
+            current_item = {id: req.params.id, name: req.body.name}
             res.render('item_delete', {
                 title: 'Delete Item:',
                 item: current_item,
                 errors: errors.array()
             });
         } else {
-            await Item.findByIdAndDelete(req.body.itemid);
+            await db.deleteItem(req.params.id)
             res.redirect('/inventory/items')
         }
 
