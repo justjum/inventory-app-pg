@@ -186,7 +186,7 @@ const SQLITEMS = `
       connectionString: argv[2]==='production' ? process.env.PRODCONNECT : process.env.LOCALCONNECT
     });
     await client.connect();
-    //await client.query(SQL);
+    await client.query(SQL);
     await client.query(SQLITEMS);
     await client.end();
     console.log("done");
