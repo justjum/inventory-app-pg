@@ -4,5 +4,5 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 module.exports = new Pool({
-    connectionString: process.env.POSTGRESS_URI || process.env.LOCALCONNECT 
+    connectionString: process.env.PRODCONNECT || process.env.LOCALCONNECT 
 })
