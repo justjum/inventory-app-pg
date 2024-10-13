@@ -20,6 +20,7 @@ exports.index = asyncHandler(async (req, res, next) => {
             categories: categories,
         })
     } catch {
+        console.log("Couldn't Connect")
         res.render('index', {
             title: 'Inventory Application',
             items: {},
