@@ -5,19 +5,29 @@ const db = require('../db/queries');
 
 exports.index = asyncHandler(async (req, res, next) => {
     // get details of all items, categories, and brands
-    const [items, brands, categories] = await Promise.all([
-        db.getAllItems(),
-        db.getAllBrands(),
-        db.getAllCategories() 
-    ]) 
-    console.log(items);
+    try {
+        const [items, brands, categories] = await Promise.all([
+            db.getAllItems(),
+            db.getAllBrands(),
+            db.getAllCategories() 
+        ]) 
+        console.log(items);
+    
+        res.render('index', {
+            title: 'Inventory Application',
+            items: items,
+            brands: brands,
+            categories: categories,
+        })
+    } catch {
+        res.render('index', {
+            title: 'Inventory Application',
+            items: {},
+            brands: {},
+            categories: {}
+        })
+    }
 
-    res.render('index', {
-        title: 'Inventory Application',
-        items: items,
-        brands: brands,
-        categories: categories,
-    })
 });
 
 exports.allItems = asyncHandler(async (req, res, next) => {
